@@ -1,4 +1,5 @@
 from tkinter import *
+from Unit import *
 
 class Game:
     def __init__(self):
@@ -10,6 +11,7 @@ class Game:
         self.canvas.pack()
     
     def mainLoop(self):
+        self.unit = Unit(self.canvas)
         while True:
             self.tk.update()
    
