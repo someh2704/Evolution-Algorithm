@@ -13,10 +13,16 @@ class Game:
         self.canvas.pack()
     
     def mainLoop(self):
-        self.unit = Unit(self.canvas)
+        self.unit_list = [Prey(self.canvas) for i in range(10)]
+        self.predator = Predator(self.canvas)
         while True:
             self.canvas.delete("all")
-            self.unit.move()
+            for unit in self.unit_list:
+                unit.runAway(self.predator)
+                unit.move()
+            self.predator.hunt(self.unit_list)
+            self.predator.move()
+            
             self.tk.update()
             time.sleep(0.005)
    
