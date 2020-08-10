@@ -1,5 +1,7 @@
 from tkinter import *
 from Unit import *
+import time
+import random
 
 class Game:
     def __init__(self):
@@ -13,7 +15,10 @@ class Game:
     def mainLoop(self):
         self.unit = Unit(self.canvas)
         while True:
+            self.canvas.delete("all")
+            self.unit.move()
             self.tk.update()
+            time.sleep(0.005)
    
 g = Game()
 g.mainLoop()
