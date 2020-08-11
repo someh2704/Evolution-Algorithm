@@ -1,4 +1,5 @@
 from tkinter import *
+from UnitManager import *
 from Unit import *
 import time
 import random
@@ -11,20 +12,26 @@ class Game:
         
         self.canvas = Canvas(self.tk, width=1080, height=720)
         self.canvas.pack()
-    
+
+        self.Units = UnitManager(self.canvas)
+        
     def mainLoop(self):
-        self.unit_list = [Prey(self.canvas) for i in range(10)]
-        self.predator = Predator(self.canvas)
+        for i in range(10):
+            self.Units.create(Prey(self.canvas))
+        self.Units.create(Predator(self.canvas))
+        
+        for unit in self.Units.unit_list:
+            unit.setDestination((400, 400))
+        
+        self.tk.update()
         while True:
             self.canvas.delete("all")
-            for unit in self.unit_list:
-                unit.runAway(self.predator)
-                unit.move()
-            self.predator.hunt(self.unit_list)
-            self.predator.move()
-            
+            self.Units.setDestination()
+            self.Units.move()
+            self.Units.delete()
             self.tk.update()
             time.sleep(0.005)
    
-g = Game()
-g.mainLoop()
+if __name__ == '__main__':
+    g = Game()
+    g.mainLoop()

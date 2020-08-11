@@ -1,9 +1,13 @@
 import math
 import random
 from tkinter import *
+import uuid
 
 class Unit:
     def __init__(self, canvas, position=(10, 10), size=10, speed=1, color="RED"):
+        self.uuid = str(uuid.uuid4()) # 고유 식별자
+        self.name = "Unit"
+        
         self.state = "stop"
         self.x = position[0] # 현재 좌표
         self.y = position[1]
@@ -16,7 +20,7 @@ class Unit:
         self.color = color
         self.canvas = canvas
         self.canvas.create_oval(self.x - self.size/2, self.y - self.size/2,
-                                self.x + self.size/2, self.y + self.size/2, fill=self.color)
+                                self.x + self.size/2, self.y + self.size/2, fill=self.color, tags=self.uuid)
         
     def setDestination(self, position):
         self.state = "move"
@@ -39,18 +43,26 @@ class Unit:
         self.y += _amount * math.sin(_theta)
         
         self.canvas.create_oval(self.x - self.size/2, self.y - self.size/2,
-                                self.x + self.size/2, self.y + self.size/2, fill=self.color)
+                                self.x + self.size/2, self.y + self.size/2, fill=self.color, tags=self.uuid)
         
 class Predator(Unit):
     def __init__(self, canvas, position=(1080, 720), size=20, speed=0.5, color='RED'):
         super().__init__(canvas, position=position, size=size, speed=speed, color=color)
+        self.name = "Predator"
+        
         
     def hunt(self, unit_list):
         destination = []
         for unit in unit_list:
+            if(unit.name == self.name):
+                continue
+            
             _dx = self.x - unit.x
             _dy = self.y - unit.y
             _length = math.sqrt(_dx*_dx + _dy*_dy)
+            
+            if(int(_length) < self.size / 2):
+                unit.state = "DEAD"
             
             # 유닛들의 좌표와 나와의 거리를 구하기
             destination.append((unit.x, unit.y, _length))
@@ -60,10 +72,11 @@ class Predator(Unit):
         self.setDestination((target[0], target[1]))
         
 class Prey(Unit):
-    def __init__(self, canvas, position=(10,10), size=10, speed=1, color="Yellow"):
+    def __init__(self, canvas, position=(10,10), size=10, speed=3, color="Yellow"):
         super().__init__(canvas, position=position, size=size, speed=speed, color=color)
-        self.setDestination((random.randint(0, 1080), random.randint(0, 720)))
-    
+        self.name = "Prey"
+        self.delay = 0
+        
     def runAway(self, predator):
         # 0.005초에 한번 루프가 돌므로 200번 돌면 3초
         _dx = self.x - predator.x
@@ -72,5 +85,3 @@ class Prey(Unit):
         
         if(_length < 300):
             self.setDestination((self.x+_dx, self.y+_dy))
-        
-    
