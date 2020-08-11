@@ -37,7 +37,6 @@ class Game:
             unit.setDestination((random.randint(0, 1080), random.randint(0, 720)))
         
         self.tk.update()
-        time.sleep(5)
         while True:
             stime = time.time()
             self.canvas.delete("all")
