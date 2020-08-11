@@ -17,13 +17,15 @@ class Game:
         
     def mainLoop(self):
         for i in range(10):
-            self.Units.create(Prey(self.canvas))
-        self.Units.create(Predator(self.canvas))
+            self.Units.create(Prey(self.canvas, position=(random.randint(0, 1080), random.randint(0, 720))))
+        self.Units.create(Predator(self.canvas, position=(1080, 360)))
+        self.Units.create(Predator(self.canvas, position=(0, 360)))
         
         for unit in self.Units.unit_list:
-            unit.setDestination((400, 400))
+            unit.setDestination((random.randint(0, 1080), random.randint(0, 720)))
         
         self.tk.update()
+        time.sleep(5)
         while True:
             self.canvas.delete("all")
             self.Units.setDestination()
