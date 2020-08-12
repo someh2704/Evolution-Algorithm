@@ -14,32 +14,30 @@ class Game:
         self.canvas.pack()
 
         self.Units = UnitManager(self.canvas)
-    
-    def attackCoolDown(self):
-        stime= time.time()
-        for unit in self.Units.unit_list:
-            if(unit.status.can_attack == False):
-                unit.status.delay_count += 1
-                if(unit.status.attack_delay < unit.status.delay_count):
-                    unit.status.can_attack = True
-                    unit.status.delay_count = 0
-        etime = time.time()
-        next_time = 1000 - int((etime - stime)* 1000)
-        self.tk.after(next_time, self.attackCoolDown)
+        self.time = 0
         
-    def mainLoop(self):
-        for i in range(3):
+        
+        # 결과물 확인 용 입니다.
+        
+        for i in range(5):
             self.Units.create(Prey(self.canvas, position=(random.randint(0, 1080), random.randint(0, 720))))
         self.Units.create(Predator(self.canvas, position=(1080, 360)))
         
-        
         for unit in self.Units.unit_list:
             unit.setDestination((random.randint(0, 1080), random.randint(0, 720)))
-        
         self.tk.update()
+        
+        
+    def attackCoolDown(self):
+        self.Units.attackCoolDown()
+        self.Units.searchCoolDown()
+        self.tk.after(1000, self.attackCoolDown)
+        
+    def mainLoop(self):
         while True:
             stime = time.time()
             self.canvas.delete("all")
+            self.Units.search()
             self.Units.setDestination()
             self.Units.move()
             self.Units.delete()

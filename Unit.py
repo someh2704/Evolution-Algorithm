@@ -2,27 +2,24 @@ from Status import *
 import math
 import random
 from tkinter import *
-import uuid
 
 class Unit:
-    def __init__(self, canvas, position=(10, 10)):
-        self.uuid = str(uuid.uuid4()) # 고유 식별자
-        self.name = "Unit"
+    def __init__(self, canvas, position=(10, 10), file="UnitInfo/UnitInfo.json"):
         
         self.state = "stop"
         self.x = position[0] # 현재 좌표
         self.y = position[1]
         self.dx = 0 # 이동할 목표 좌표
         self.dy = 0
+        self.appear_unit = []
         
-        self.status = Status()
-        self.status.speed = 1
-        self.status.size = 20
+        self.status = Status(file)
         
-        self.color = "RED"
+        self.status.name = "Unit"
+        self.status.color = "RED"
         self.canvas = canvas
         self.canvas.create_oval(self.x - self.status.size/2, self.y - self.status.size/2,
-                                self.x + self.status.size/2, self.y + self.status.size/2, fill=self.color, tags=self.uuid)
+                                self.x + self.status.size/2, self.y + self.status.size/2, fill=self.status.color, tags=self.status.uuid)
         
     def setDestination(self, position):
         self.state = "move"
@@ -39,14 +36,24 @@ class Unit:
         _length = math.sqrt(_dx*_dx + _dy*_dy)
         _theta = math.atan2(_dy, _dx)
         
-        _amount = min(_length, self.status.speed)
+        _amount = min(_length, self.status.walk_speed)
         
         self.x += _amount * math.cos(_theta)
         self.y += _amount * math.sin(_theta)
         
         self.canvas.create_oval(self.x - self.status.size/2, self.y - self.status.size/2,
-                                self.x + self.status.size/2, self.y + self.status.size/2, fill=self.color, tags=self.uuid)
+                                self.x + self.status.size/2, self.y + self.status.size/2, fill=self.status.color, tags=self.status.uuid)
+    
+    def search(self, unit_list):
+        self.appear_unit = []
+        for unit in unit_list:
+            if(unit == self):
+                return
+            _length = self.getLength((unit.x, unit.y))
+            if(_length < self.status.sight):
+                self.appear_unit.append((unit, _length))
         
+    
     def getLength(self, position):
         _dx = position[0] - self.x
         _dy = position[1] - self.y
@@ -55,50 +62,43 @@ class Unit:
         return _length
     
     def attack(self, unit):
-        if(self.status.can_attack):
+        if(self.status.attack_flag):
             unit.status.health -= self.status.damage
-            self.status.can_attack = False
+            self.status.attack_flag = False
         
     
 class Predator(Unit):
     def __init__(self, canvas, position=(1080, 720)):
         super().__init__(canvas, position=position)
-        self.name = "Predator"
+        self.status.name = "Predator"
+        self.status.size = 20
         self.status.health = 100
         self.status.max_health = 100
         self.status.attack_delay = 3
-        self.status.speed = 1.5
+        self.status.walk_speed = 2
+        self.status.sight = 300
+        self.status.search_delay = 3
         self.status.damage = 9
-        self.status.range = 10000
+        self.status.range = 30
         
-    def hunt(self, unit_list):
-        destination = []
-        for unit in unit_list:
-            # 자기 자신은 제외
-            if(unit.name == self.name):
-                continue
+    def hunt(self):
+        # 주변에 유닛이 없을수도 있으므로 예외처리
+        try:
+            target = min(self.appear_unit, key=lambda info: info[1])
+            self.setDestination((target[0].x, target[0].y))
+            self.attack(target[0])
+        except:
+            pass
             
-            _length = self.getLength((unit.x, unit.y))
-            
-            # 사정거리가 닿으면 공격
-            if(_length < self.status.range):
-                self.attack(unit)
-            
-            # 유닛들의 좌표와 나와의 거리를 구하기
-            destination.append((unit.x, unit.y, _length))
-            
-        # 가장 가까운 유닛으로 접근
-        target = min(destination, key=lambda info: info[2])
-        self.setDestination((target[0], target[1]))
         
 class Prey(Unit):
     def __init__(self, canvas, position=(10,10)):
         super().__init__(canvas, position=position)
-        self.color = "YELLOW"
-        self.name = "Prey"
+        self.status.color = "YELLOW"
+        self.status.name = "Prey"
         self.delay = 0
         self.status.size = 10
-        self.status.speed = 2
+        self.status.walk_speed = 1
         self.status.health = 10
         self.status.max_health = 10
         

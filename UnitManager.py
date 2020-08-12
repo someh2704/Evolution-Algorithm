@@ -16,15 +16,39 @@ class UnitManager:
         for unit in self.unit_list:
             if(unit.status.health < 0):
                 unit.state = "DEAD"
-                self.canvas.delete(unit.uuid)
+                self.canvas.delete(unit.status.uuid)
                 self.unit_list.remove(unit)
             elif(unit.status.health <= unit.status.max_health/2):
-                unit.color = "BLACK"
-
+                unit.status.color = "BLACK"
+    
+    def attackCoolDown(self):
+        for unit in self.unit_list:
+            if(unit.status.attack_flag == False):
+                unit.status.attack_counter += 1
+                if(unit.status.attack_delay <= unit.status.attack_counter):
+                    unit.status.attack_flag = True
+                    unit.status.attack_counter = 0
+    
+    def searchCoolDown(self):
+        for unit in self.unit_list:
+            if(unit.status.search_flag == False):
+                if(unit.status.name == "Predator"):
+                    print(f"{unit.status.search_delay - unit.status.search_counter}초 남았습니다")
+                unit.status.search_counter += 1
+                if(unit.status.search_delay <= unit.status.search_counter):
+                    unit.status.search_flag = True
+                    unit.status.search_counter = 0
+    
+    def search(self):
+        for unit in self.unit_list:
+            if(unit.status.search_flag):
+                unit.search(self.unit_list)
+                unit.status.search_flag = False
+    
     def setDestination(self):
         for unit in self.unit_list:
-            if(unit.name == "Predator"):
-                unit.hunt(self.unit_list)
+            if(unit.status.name == "Predator"):
+                unit.hunt()
             else:
                 unit.runAway()
 

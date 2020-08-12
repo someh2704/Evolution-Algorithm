@@ -3,6 +3,11 @@
         "tribe": null,
         "Name": null
     },
+    "Appearance":{
+        "Color": "RED",
+        "Size": 0,
+        "Shape": "Circle"
+    },
     "Stats": {
         "Health": {
             "Health": 0,
