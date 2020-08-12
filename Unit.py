@@ -72,8 +72,8 @@ class Unit:
         return _length
     
     def attack(self, unit):
-        _length = self.getLength((unit.x, unit.y))
         if(self.status.attack_flag):
+            _length = self.getLength((unit.x, unit.y))
             if(_length < self.status.attack_range):
                 unit.status.health -= self.status.damage
                 self.status.attack_flag = False
