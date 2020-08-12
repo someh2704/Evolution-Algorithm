@@ -32,8 +32,6 @@ class UnitManager:
     def searchCoolDown(self):
         for unit in self.unit_list:
             if(unit.status.search_flag == False):
-                if(unit.status.name == "Predator"):
-                    print(f"{unit.status.search_delay - unit.status.search_counter}초 남았습니다")
                 unit.status.search_counter += 1
                 if(unit.status.search_delay <= unit.status.search_counter):
                     unit.status.search_flag = True

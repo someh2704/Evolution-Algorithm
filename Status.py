@@ -20,7 +20,7 @@ class Status:
         self.health_regen = self.unit_info["Stats"]["Health"]["HealthRegen"]
         
         self.damage = self.unit_info["Stats"]["Attack"]["Damage"]
-        self.range = self.unit_info["Stats"]["Attack"]["Range"]
+        self.attack_range = self.unit_info["Stats"]["Attack"]["Range"]
         self.sight = self.unit_info["Stats"]["Attack"]["Sight"]
         
         self.walk_speed = self.unit_info["Stats"]["Move"]["WalkSpeed"]

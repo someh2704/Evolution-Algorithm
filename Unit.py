@@ -18,8 +18,19 @@ class Unit:
         self.status.name = "Unit"
         self.status.color = "RED"
         self.canvas = canvas
+        self.display()
+        
+        
+    def display(self):
+        # 본체 그리기
         self.canvas.create_oval(self.x - self.status.size/2, self.y - self.status.size/2,
                                 self.x + self.status.size/2, self.y + self.status.size/2, fill=self.status.color, tags=self.status.uuid)
+        # 시야 범위 그리기
+        self.canvas.create_oval(self.x - self.status.sight, self.y - self.status.sight,
+                                self.x + self.status.sight, self.y + self.status.sight, outline='GREEN', tags=self.status.uuid)
+        # 공격 범위 그리기
+        self.canvas.create_oval(self.x - self.status.attack_range, self.y - self.status.attack_range,
+                                self.x + self.status.attack_range, self.y + self.status.attack_range, outline="BLUE", tags=self.status.uuid)
         
     def setDestination(self, position):
         self.state = "move"
@@ -41,9 +52,8 @@ class Unit:
         self.x += _amount * math.cos(_theta)
         self.y += _amount * math.sin(_theta)
         
-        self.canvas.create_oval(self.x - self.status.size/2, self.y - self.status.size/2,
-                                self.x + self.status.size/2, self.y + self.status.size/2, fill=self.status.color, tags=self.status.uuid)
-    
+        self.display()
+        
     def search(self, unit_list):
         self.appear_unit = []
         for unit in unit_list:
@@ -62,9 +72,11 @@ class Unit:
         return _length
     
     def attack(self, unit):
+        _length = self.getLength((unit.x, unit.y))
         if(self.status.attack_flag):
-            unit.status.health -= self.status.damage
-            self.status.attack_flag = False
+            if(_length < self.status.attack_range):
+                unit.status.health -= self.status.damage
+                self.status.attack_flag = False
         
     
 class Predator(Unit):
@@ -74,12 +86,12 @@ class Predator(Unit):
         self.status.size = 20
         self.status.health = 100
         self.status.max_health = 100
-        self.status.attack_delay = 3
+        self.status.attack_delay = 0
         self.status.walk_speed = 2
         self.status.sight = 300
         self.status.search_delay = 3
-        self.status.damage = 9
-        self.status.range = 30
+        self.status.damage = 5
+        self.status.attack_range = 100
         
     def hunt(self):
         # 주변에 유닛이 없을수도 있으므로 예외처리
@@ -97,6 +109,7 @@ class Prey(Unit):
         self.status.color = "YELLOW"
         self.status.name = "Prey"
         self.delay = 0
+        self.status.sight = 5
         self.status.size = 10
         self.status.walk_speed = 1
         self.status.health = 10
