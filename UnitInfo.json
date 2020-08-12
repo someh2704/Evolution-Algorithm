@@ -1,0 +1,35 @@
+{
+    "Name": {
+        "tribe": null,
+        "Name": null
+    },
+    "Stats": {
+        "Health": {
+            "Health": 0,
+            "MaxHealth": 0,
+            "Armor": 0,
+            "HealthRegen": 0
+        },
+        "Attack": {
+            "Damage": 0,
+            "Range": 0,
+            "Sight": 0
+        },
+        "Move": {
+            "WalkSpeed": 0,
+            "RunSpeed": 0,
+            "JumpRange": 0
+        },
+        "Age": 0,
+        "Stamina": 0
+    },
+    "Delay": {
+        "AttackDelay": 0,
+        "SearchDelay": 0
+    },
+    "Flag": {
+        "AttackFlag": true,
+        "SearchFlag": true
+    },
+    "Inteligence": null
+}
