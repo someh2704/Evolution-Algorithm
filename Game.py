@@ -33,19 +33,21 @@ class Game:
         self.Units.searchCoolDown()
         self.tk.after(1000, self.attackCoolDown)
         
+    def stateupdate(self):
+        self.Units.delete()
+        self.tk.after(10, self.stateupdate)
+        
     def mainLoop(self):
         while True:
-            stime = time.time()
             self.canvas.delete("all")
             self.Units.search()
             self.Units.setDestination()
             self.Units.move()
-            self.Units.delete()
             self.tk.update()
             time.sleep(0.005)
-            
    
 if __name__ == '__main__':
     g = Game()
     g.attackCoolDown()
+    g.stateupdate()
     g.mainLoop()

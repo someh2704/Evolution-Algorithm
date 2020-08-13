@@ -1,4 +1,6 @@
 from Status import *
+from Information import *
+from Genetic import *
 import math
 import random
 from tkinter import *
@@ -14,9 +16,10 @@ class Unit:
         self.appear_unit = []
         
         self.status = Status(file)
+        self.info = Information(file)
         
-        self.status.name = "Unit"
-        self.status.color = "RED"
+        self.info.name = "Unit"
+        self.info.color = "RED"
         self.canvas = canvas
         self.display()
         
@@ -24,13 +27,13 @@ class Unit:
     def display(self):
         # 본체 그리기
         self.canvas.create_oval(self.x - self.status.size/2, self.y - self.status.size/2,
-                                self.x + self.status.size/2, self.y + self.status.size/2, fill=self.status.color, tags=self.status.uuid)
+                                self.x + self.status.size/2, self.y + self.status.size/2, fill=self.info.color, tags=self.info.uuid)
         # 시야 범위 그리기
         self.canvas.create_oval(self.x - self.status.sight, self.y - self.status.sight,
-                                self.x + self.status.sight, self.y + self.status.sight, outline='GREEN', tags=self.status.uuid)
+                                self.x + self.status.sight, self.y + self.status.sight, outline='GREEN', tags=self.info.uuid)
         # 공격 범위 그리기
         self.canvas.create_oval(self.x - self.status.attack_range, self.y - self.status.attack_range,
-                                self.x + self.status.attack_range, self.y + self.status.attack_range, outline="BLUE", tags=self.status.uuid)
+                                self.x + self.status.attack_range, self.y + self.status.attack_range, outline="BLUE", tags=self.info.uuid)
         
     def setDestination(self, position):
         self.state = "move"
@@ -57,11 +60,14 @@ class Unit:
     def search(self, unit_list):
         self.appear_unit = []
         for unit in unit_list:
+            if(unit.info.name == 'Predator'):
+                g = Genetic()
+                g.assess(self, self.appear_unit)
             if(unit == self):
                 return
             _length = self.getLength((unit.x, unit.y))
             if(_length < self.status.sight):
-                self.appear_unit.append((unit, _length))
+                self.appear_unit.append(unit)
         
     
     def getLength(self, position):
@@ -72,21 +78,24 @@ class Unit:
         return _length
     
     def attack(self, unit):
-        if(self.status.attack_flag):
+        if(self.info.attack_flag):
             _length = self.getLength((unit.x, unit.y))
             if(_length < self.status.attack_range):
+                if(unit.status.health <= 0):
+                    return
                 unit.status.health -= self.status.damage
-                self.status.attack_flag = False
+                print("남은 체력: ", unit.status.health)
+                self.info.attack_flag = False
         
     
 class Predator(Unit):
     def __init__(self, canvas, position=(1080, 720)):
         super().__init__(canvas, position=position)
-        self.status.name = "Predator"
+        self.info.name = "Predator"
         self.status.size = 20
         self.status.health = 100
         self.status.max_health = 100
-        self.status.attack_delay = 0
+        self.status.attack_delay = 2
         self.status.walk_speed = 2
         self.status.sight = 300
         self.status.search_delay = 3
@@ -96,9 +105,9 @@ class Predator(Unit):
     def hunt(self):
         # 주변에 유닛이 없을수도 있으므로 예외처리
         try:
-            target = min(self.appear_unit, key=lambda info: info[1])
-            self.setDestination((target[0].x, target[0].y))
-            self.attack(target[0])
+            target = min(self.appear_unit, key=lambda info: self.getLength((info.x, info.y)))
+            self.setDestination((target.x, target.y))
+            self.attack(target)
         except:
             pass
             
@@ -106,8 +115,8 @@ class Predator(Unit):
 class Prey(Unit):
     def __init__(self, canvas, position=(10,10)):
         super().__init__(canvas, position=position)
-        self.status.color = "YELLOW"
-        self.status.name = "Prey"
+        self.info.color = "YELLOW"
+        self.info.name = "Prey"
         self.delay = 0
         self.status.sight = 5
         self.status.size = 10
@@ -130,3 +139,4 @@ class Prey(Unit):
         
         # if(_length < 300):
         #     self.setDestination((self.x+_dx, self.y+_dy))
+        
