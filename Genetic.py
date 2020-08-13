@@ -14,3 +14,5 @@ class Genetic:
             table.append(info)
         return table
     
+    def breed(self, units):
+        pass

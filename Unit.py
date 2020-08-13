@@ -60,9 +60,11 @@ class Unit:
     def search(self, unit_list):
         self.appear_unit = []
         for unit in unit_list:
+            # 디버깅 용 코드입니다
             if(unit.info.name == 'Predator'):
                 g = Genetic()
                 g.assess(self, self.appear_unit)
+            ###
             if(unit == self):
                 return
             _length = self.getLength((unit.x, unit.y))
