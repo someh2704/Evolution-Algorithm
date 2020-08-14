@@ -31,6 +31,7 @@ class Game:
     def attackCoolDown(self):
         self.Units.attackCoolDown()
         self.Units.searchCoolDown()
+        self.Units.getChild((self.Units.unit_list[0], self.Units.unit_list[1]), self.Units.unit_list[0])
         self.tk.after(1000, self.attackCoolDown)
         
     def stateupdate(self):

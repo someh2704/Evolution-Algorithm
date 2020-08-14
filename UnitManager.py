@@ -1,5 +1,8 @@
 from Unit import Unit
+from Genetic import *
+from Status import *
 import random
+
 
 class UnitManager:
     def __init__(self, canvas):
@@ -54,4 +57,5 @@ class UnitManager:
     def move(self):
         for unit in self.unit_list:
             unit.move()
-
+    
+    
