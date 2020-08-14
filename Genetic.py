@@ -34,6 +34,7 @@ class Genetic:
                 continue
             child.status.__dict__[stat] = int((_parent1 + _parent2) / random.gauss(2, 0.17))
             
+        child.status.health = child.status.max_health
         
         return child
         
