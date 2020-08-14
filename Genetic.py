@@ -22,15 +22,19 @@ class Genetic:
         return table
     
     @staticmethod
-    def breed(parents, child=None, file="UnitInfo/UnitInfo.json"):
+    def breed(parents, unit, file="UnitInfo/UnitInfo.json"):
         status = Status(file).__dict__
-        child = copy.deepcopy(child) if child != None else parents[0] if random.random() < 0.5 else parents[1]
+        child = unit
+        
         for stat in status:
-            print(stat)
-            if(random.random() < 0.5):
-                child.status.__dict__[stat] = copy.deepcopy(parents[0].status.__dict__[stat])
-            else:
-                child.status.__dict__[stat] = copy.deepcopy(parents[1].status.__dict__[stat])
+            _parent1 = parents[0].status.__dict__[stat]
+            _parent2 = parents[1].status.__dict__[stat]
+            
+            if "delay" in stat:
+                continue
+            child.status.__dict__[stat] = int((_parent1 + _parent2) / random.gauss(2, 0.17))
+            
+        
         return child
         
 if __name__ == "__main__":
@@ -38,10 +42,13 @@ if __name__ == "__main__":
     canvas = Canvas(tk, width=1080, height=720)
     a = Predator(canvas)
     b = Predator(canvas)
-    a.status.attack_range = 1000
     
-    b.status.attack_range = 2000
-    c = Genetic.breed((a, b))
-    print("C의 사정거리: ", c.status.attack_range)
-    print(c)
+    a.status.health = 585
+    b.status.health = 706
+    a.status.max_health = 900
+    c = Genetic.breed((a, b), Predator(canvas))
+    
+    print(c.status.attack_range)
+    print(c.status.max_health)
+    print(c.status.health)
     

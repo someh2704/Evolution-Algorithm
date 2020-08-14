@@ -21,7 +21,7 @@ class Status:
         self.run_speed = self.unit_info["Stats"]["Move"]["RunSpeed"]
         self.jump_range = self.unit_info["Stats"]["Move"]["JumpRange"]
         
-        self.age = self.unit_info["Stats"]["Age"]
+        self.max_age = self.unit_info["Stats"]["MaxAge"]
         self.stamina = self.unit_info["Stats"]["Stamina"]
         
         self.attack_delay = self.unit_info["Delay"]["AttackDelay"]

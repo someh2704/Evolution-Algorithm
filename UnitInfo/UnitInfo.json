@@ -25,7 +25,7 @@
             "RunSpeed": 0,
             "JumpRange": 0
         },
-        "Age": 0,
+        "MaxAge": 0,
         "Stamina": 0
     },
     "Delay": {
