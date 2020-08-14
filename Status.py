@@ -26,6 +26,7 @@ class Status:
         
         self.attack_delay = self.unit_info["Delay"]["AttackDelay"]
         self.search_delay = self.unit_info["Delay"]["SearchDelay"]
+        self.birth_delay = self.unit_info["Delay"]["BirthDelay"]
         
         del self.unit_info
         

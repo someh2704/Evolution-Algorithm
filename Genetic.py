@@ -12,7 +12,7 @@ class Genetic:
     def assess(myself, appear_unit):
         table = []
         for unit in appear_unit:
-            if(unit.info.name == myself.info.name):
+            if(unit.info.name != myself.info.name):
                 continue
             
             info = unit.status.__dict__
@@ -35,6 +35,8 @@ class Genetic:
             child.status.__dict__[stat] = int((_parent1 + _parent2) / random.gauss(2, 0.17))
             
         child.status.health = child.status.max_health
+        child.info.birth_flag = False
+        child.__dict__["delay"] = 0
         
         return child
         

@@ -14,9 +14,11 @@ class Information:
         
         self.attack_counter = 0
         self.search_counter = 0
+        self.birth_counter = 0
 
-        self.attack_flag = self.unit_info["Flag"]["AttackFlag"]
-        self.search_flag = self.unit_info["Flag"]["SearchFlag"]
+        self.attack_flag = True
+        self.search_flag = True
+        self.birth_flag = True
         
         del self.unit_info
     

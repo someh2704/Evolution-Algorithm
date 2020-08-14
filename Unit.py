@@ -21,6 +21,7 @@ class Unit:
         self.info.name = "Unit"
         self.info.color = "RED"
         self.canvas = canvas
+        
         self.display()
         
         
@@ -60,16 +61,17 @@ class Unit:
     def search(self, unit_list):
         self.appear_unit = []
         for unit in unit_list:
-            # 디버깅 용 코드입니다
-            if(unit.info.name == 'Predator'):
-                g = Genetic()
-                g.assess(self, self.appear_unit)
-            ###
+            # # 디버깅 용 코드입니다
+            # if(unit.info.name == 'Predator'):
+            #     g = Genetic()
+            #     g.assess(self, self.appear_unit)
+            # ##
             if(unit == self):
-                return
+                continue
             _length = self.getLength((unit.x, unit.y))
             if(_length < self.status.sight):
                 self.appear_unit.append(unit)
+                
         
     
     def getLength(self, position):
@@ -86,8 +88,20 @@ class Unit:
                 if(unit.status.health <= 0):
                     return
                 unit.status.health -= self.status.damage
-                print("남은 체력: ", unit.status.health)
                 self.info.attack_flag = False
+                
+    def choice(self):
+        
+        if len(self.appear_unit) > 0:
+        
+            # 딥러닝으로 어떤 유닛을 고르도록 만들 예정
+            unit = self.appear_unit[0]
+            if(unit.info.birth_flag == False):
+                return
+            
+            return unit
+        else:
+            return
         
     
 class Predator(Unit):
@@ -97,12 +111,13 @@ class Predator(Unit):
         self.status.size = 20
         self.status.health = 100
         self.status.max_health = 100
-        self.status.attack_delay = 2
+        self.status.attack_delay = 0
         self.status.walk_speed = 2
         self.status.sight = 300
         self.status.search_delay = 3
-        self.status.damage = 5
+        self.status.damage = 3000000
         self.status.attack_range = 100
+        self.status.birth_delay = 4
         
     def hunt(self):
         # 주변에 유닛이 없을수도 있으므로 예외처리
@@ -125,6 +140,7 @@ class Prey(Unit):
         self.status.walk_speed = 1
         self.status.health = 10
         self.status.max_health = 10
+        self.status.birth_delay = 7
         
     def runAway(self):
         if(self.delay < 400):

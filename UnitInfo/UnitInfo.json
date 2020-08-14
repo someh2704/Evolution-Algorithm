@@ -30,11 +30,8 @@
     },
     "Delay": {
         "AttackDelay": 0,
-        "SearchDelay": 0
-    },
-    "Flag": {
-        "AttackFlag": true,
-        "SearchFlag": true
+        "SearchDelay": 0,
+        "BirthDelay": 0
     },
     "Inteligence": null
 }

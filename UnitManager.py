@@ -1,4 +1,4 @@
-from Unit import Unit
+from Unit import *
 from Genetic import *
 from Status import *
 import random
@@ -20,7 +20,6 @@ class UnitManager:
             if(unit.status.health <= 0):
                 self.unit_list.remove(unit)
                 self.canvas.delete(unit.info.uuid)
-                print("제거 중, 남은체력: ",unit.status.health)
             elif(unit.status.health <= unit.status.max_health/2):
                 unit.info.color = "BLACK"
     
@@ -39,6 +38,14 @@ class UnitManager:
                 if(unit.status.search_delay <= unit.info.search_counter):
                     unit.info.search_flag = True
                     unit.info.search_counter = 0
+                    
+    def birthCoolDown(self):
+        for unit in self.unit_list:
+            if(unit.info.birth_flag == False):
+                unit.info.birth_counter += 1
+                if(unit.status.birth_delay <= unit.info.birth_counter):
+                    unit.info.birth_flag = True
+                    unit.info.birth_counter = 0
     
     def search(self):
         for unit in self.unit_list:
@@ -52,10 +59,17 @@ class UnitManager:
                 unit.hunt()
             else:
                 unit.runAway()
-
     
     def move(self):
         for unit in self.unit_list:
             unit.move()
     
-    
+    def makeChild(self):
+        for unit in self.unit_list:
+            if(unit.info.birth_flag == True):
+                partner = unit.choice()
+                if partner != None:
+                    
+                    self.create(Genetic.breed((unit, partner), Prey(self.canvas)))
+                    unit.info.birth_flag = False
+                    partner.info.birth_flag = False
